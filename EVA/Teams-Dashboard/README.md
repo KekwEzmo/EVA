@@ -1,4 +1,4 @@
-# Overview of the Dashboard template
+# Overview of the Dashboard 
 
 This template showcases an app that embeds a canvas containing multiple cards that provide an overview of content in Microsoft Teams. Start with this template you can:
 
