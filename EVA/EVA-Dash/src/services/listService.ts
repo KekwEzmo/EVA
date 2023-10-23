@@ -7,7 +7,8 @@ import { ListModel } from "../models/listModel";
 export const getListData = (): ListModel[] => [
   {
     id: "id1",
-    title: "Lorem ipsum",
+    
+    title: "S",
     content: "Lorem ipsum dolor sit amet",
   },
   {

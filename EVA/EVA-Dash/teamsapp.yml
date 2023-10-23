@@ -11,7 +11,7 @@ provision:
   - uses: teamsApp/create
     with:
       # Teams app name
-      name: Teams-Dashboard-${{TEAMSFX_ENV}}
+      name: EVA-Dash-${{TEAMSFX_ENV}}
     # Write the information of created resources into environment file for
     # the specified environment variable(s).
     writeToEnvironmentFile:
@@ -141,4 +141,4 @@ publish:
     # the specified environment variable(s).
     writeToEnvironmentFile:
       publishedAppId: TEAMS_APP_PUBLISHED_APP_ID
-projectId: 23f23b80-4f6b-4f52-bf6f-ff5a657a3c42
+projectId: 512f55c3-2827-4756-b919-5f3c52f464f7
