@@ -1,7 +1,6 @@
 export enum DayRange {
   Seven,
-  Thirty,
-  Sixty,
+  Fourteen,
 }
 
 export interface TimeModel {

@@ -31,7 +31,7 @@ export default class ChartWidget extends BaseWidget<any, IChartWidgetState> {
     return (
       <div>
         <DataPie24Regular />
-        <Text>Your chart</Text>
+        <Text>Tickets per Day</Text>
         <Button icon={<MoreHorizontal32Regular />} appearance="transparent" />
       </div>
     );
@@ -86,14 +86,14 @@ export default class ChartWidget extends BaseWidget<any, IChartWidgetState> {
   private retriveChartsData(r: DayRange): IChartProps {
     const chartPoints = [
       {
-        legend: "Line 1",
+        legend: "Tickets closed",
         data: getChart1Points(r),
-        color: "#6264A7",
+        color: "#6aa84f",
       },
       {
-        legend: "Line 2",
+        legend: "Tickets open",
         data: getChart2Points(r),
-        color: "#D9DBDB",
+        color: "#ffd966",
       },
     ];
     const chartData = {

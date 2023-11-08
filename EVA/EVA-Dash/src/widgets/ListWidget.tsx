@@ -20,7 +20,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
     return (
       <div>
         <List28Filled />
-        <Text>Your List</Text>
+        <Text>Your Tickets</Text>
         <Button icon={<MoreHorizontal32Regular />} appearance="transparent" />
       </div>
     );
@@ -35,6 +35,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
               <div className="divider" />
               <Text className="title">{t.title}</Text>
               <Text className="content">{t.content}</Text>
+              <Text className="head">{t.head}</Text>
             </div>
           );
         })}
@@ -43,6 +44,29 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
   }
 
   footer(): JSX.Element | undefined {
-    return <Button appearance="primary">View Details</Button>;
+    return (
+      <><Button
+        onClick={() => this.handleViewDetailsClick()}
+        appearance="primary"
+      >
+        Create Ticket
+      </Button><Button
+        onClick={() => this.handleViewDetailsClick()}
+        appearance="secondary"
+      >
+          More Details
+        </Button></>
+
+
+
+
+
+      
+    );
+  }
+  
+  private handleViewDetailsClick(): void {
+    window.open("https://www.example.com", "_blank");
   }
 }
+  
