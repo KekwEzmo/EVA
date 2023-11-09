@@ -1,12 +1,7 @@
-# Overview of the Dashboard template
+# Overview of EVA-Dash
 
-This template showcases an app that embeds a canvas containing multiple cards that provide an overview of content in Microsoft Teams. Start with this template you can:
-
-- Use widgets to display content from apps and services within your dashboard tab.
-- Integrate your app with Graph API to visualize details about the implementation of the selected data.
-- Create customizable dashboards that allow your business to set specific goals that help you track the information you need to view in multiple areas and across departments
-
-## Get started with the Dashboard template
+This project aims to create a Ticketing System within MS Teams using Azure Services for implementations in different Business Cases.
+## Get started with EVA-Dash
 
 > **Prerequisites**
 > To run the dashboard template in your local dev machine, you will need:
@@ -22,9 +17,6 @@ This template showcases an app that embeds a canvas containing multiple cards th
 3. Press F5 to start debugging which launches your app in Teams using a web browser. Select `Debug (Edge)` or `Debug (Chrome)`.
 4. When Teams launches in the browser, select the Add button in the dialog to install your app to Teams.
 
-**Congratulations**! You are running an application that can now show a dashboard in Teams:
-
-![Dashboard](https://github.com/OfficeDev/TeamsFx/assets/11220663/326e4f55-43a6-4c40-81e7-f5a9ea719169)
 
 ## What's included in the template
 
@@ -63,21 +55,11 @@ The following are project-related files. You generally will not need to customiz
 | `src/internal/login.ts`            | Implementation of login                                      |
 | `src/internal/singletonContext.ts` | Implementation of the TeamsUserCredential instance singleton |
 
-The following are Teams Toolkit specific project files. You can [visit a complete guide on Github](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview) to understand how Teams Toolkit works.
 
 | File                                 | Contents                                           |
 | - | - |
 |`teamsapp.yml`|This is the main Teams Toolkit project file. The project file defines two primary things:  Properties and configuration Stage definitions.|
 |`teamsapp.local.yml`|This overrides `teamsapp.yml` with actions that enable local execution and debugging.|
-
-## Extend the Dashboard template to add a new widget
-
-You can use the following steps to add a new widget to the dashboard:
-
-1. [Step 1: Define a data model](#step-1-define-a-data-model)
-2. [Step 2: Create a data retrive service](#step-2-create-a-data-retrive-service)
-3. [Step 3: Create a widget file](#step-3-create-a-widget-file)
-4. [Step 4: Add the widget to the dashboard](#step-4-add-the-widget-to-the-dashboard)
 
 ### Step 1: Define a data model
 
@@ -192,8 +174,6 @@ override layout(): JSX.Element | undefined {
   );
 }
 ```
-Congratulations, you've just added your own widget! To learn more about the dashboard template, [visit the documentation](https://aka.ms/teamsfx-dashboard-new). You can find more scenarios like:
-
 - [Customize the widget](https://aka.ms/teamsfx-dashboard-new#customize-the-widget)
 - [Customize the dashboard layout](https://aka.ms/teamsfx-dashboard-new#customize-the-dashboard-layout)
 - [Create a data loader](https://aka.ms/teamsfx-dashboard-new#how-to-include-a-data-loader)
