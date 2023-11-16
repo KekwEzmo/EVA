@@ -66,7 +66,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
   }
   
   private handleViewDetailsClick(): void {
-    window.open("https://www.example.com", "_blank");
+    window.open("https://500rcsnp-3978.euw.devtunnels.ms/", "_blank");
   }
 }
   
