@@ -56,17 +56,11 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
       >
           More Details
         </Button></>
-
-
-
-
-
-      
     );
   }
   
   private handleViewDetailsClick(): void {
-    window.open("https://500rcsnp-3978.euw.devtunnels.ms/", "_blank");
+    window.open("https://teams.microsoft.com/_#/apps/93be207f-42f9-403c-906a-45ddd4e6f99f/sections/conversations?slug=28:74c01073-93b3-4b00-ad70-292f9d220984&intent=2&category=16&autoNavigationOnDone=true&skipInstalledSuccess=false&filterByPersonal=false&storeLaunchFromChat=false", "_blank");
   }
 }
   
