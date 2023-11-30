@@ -18,7 +18,7 @@ This project aims to create a Ticketing System within MS Teams using Azure Servi
 4. When Teams launches in the browser, select the Add button in the dialog to install your app to Teams.
 
 
-## What's included in the template
+## What's included
 
 | Folder       | Contents                                            |
 | - | -|
