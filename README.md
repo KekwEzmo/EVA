@@ -1,7 +1,7 @@
-# Overview of EVA-Dash
+# Overview of EVA
 
 This project aims to create a Ticketing System within MS Teams using Azure Services for implementations in different Business Cases.
-## Get started with EVA-Dash
+## Get started with EVA
 
 > **Prerequisites**
 > To run the dashboard template in your local dev machine, you will need:
