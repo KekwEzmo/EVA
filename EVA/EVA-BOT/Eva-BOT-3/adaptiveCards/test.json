@@ -1,0 +1,70 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "TEST",
+        "size": "large",
+        "weight": "bolder"
+      },
+      {
+        "type": "TextBlock",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "wrap": true
+      },
+      {
+        "type": "Image",
+        "url": "https://via.placeholder.com/150",
+        "size": "medium"
+      },
+      {
+        "type": "TextBlock",
+        "text": "Counter: ${counter}",
+        "id": "counterText"
+      }
+    ],
+    "actions": [
+      {
+        "type": "Action.Execute",
+        "title": "Woah 1",
+        "verb": "test2",
+        "data": {
+            "action": "test2"
+          }
+      },
+      {
+        "type": "Action.Execute",
+        "title": "WOAH WHAT?!?!?",
+        "verb": "test",
+        "data": {
+            "action": "test"
+          }
+      },
+      {
+        "type": "Action.ShowCard",
+        "title": "Feedback",
+        "card": {
+          "type": "AdaptiveCard",
+          "body": [
+            {
+              "type": "Input.Text",
+              "id": "inPutText",
+              "isMultiline": true,
+              "placeholder": "What do you think?"
+            }
+          ],
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Submit",
+              "id": "Subtest",
+              "associatedInputs": "auto"
+            }
+          ]
+        }
+      }
+    ]
+  }
+  
