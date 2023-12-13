@@ -5,30 +5,25 @@
     "body": [
       {
         "type": "TextBlock",
-        "text": "TEST",
+        "text": "Ticket-Creator.",
         "size": "large",
         "weight": "bolder"
       },
       {
         "type": "TextBlock",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "text": "In this field you can Test te Bot for a Response and Send Custom Data to it",
         "wrap": true
       },
       {
         "type": "Image",
-        "url": "https://via.placeholder.com/150",
-        "size": "medium"
-      },
-      {
-        "type": "TextBlock",
-        "text": "Counter: ${counter}",
-        "id": "counterText"
+        "url": "https://i.imgur.com/DiLdOxO.jpeg",
+        "size": "large"
       }
     ],
     "actions": [
       {
         "type": "Action.Execute",
-        "title": "Woah 1",
+        "title": "Push me!",
         "verb": "test2",
         "data": {
             "action": "test2"
@@ -36,7 +31,7 @@
       },
       {
         "type": "Action.Execute",
-        "title": "WOAH WHAT?!?!?",
+        "title": "Push me 2",
         "verb": "test",
         "data": {
             "action": "test"
@@ -49,11 +44,45 @@
           "type": "AdaptiveCard",
           "body": [
             {
+              "type": "TextBlock",
+              "text": "Title"
+            },
+            {
+              "type": "Input.Text",
+              "id": "inPutText1",
+              "placeholder": "Describe in short words whats going on"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Data"
+            },
+            {
               "type": "Input.Text",
               "id": "inPutText",
               "isMultiline": true,
-              "placeholder": "What do you think?"
-            }
+              "placeholder": "Describe the Problem in detail"
+            },
+            {
+              "type": "Input.ChoiceSet",
+              "id": "tags1",
+              "isMultiSelect": true,
+              "value": "",
+              "choices": [
+                  {
+                      "title": "Raum",
+                      "value": "Raum"
+                  },
+                  {
+                    "title": "Dokumente",
+                    "value": "Dokumente"
+                },
+                {
+                  "title": "IT-Fehler",
+                  "value": "IT-Fehler"
+              }
+              ],
+              "style": "expanded"
+          }
           ],
           "actions": [
             {

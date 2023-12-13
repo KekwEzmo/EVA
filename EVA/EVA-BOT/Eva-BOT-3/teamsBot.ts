@@ -11,11 +11,56 @@ import rawLearnCard from "./adaptiveCards/learn.json";
 import testcard from "./adaptiveCards/test.json";
 import card2 from "./adaptiveCards/test2.json";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
+import { POST } from "botbuilder/lib/streaming";
 
 export interface DataInterface {
   likeCount: number;
 }
+// #################
 
+import sqlite3 from 'sqlite3';
+
+// Function to initialize the database
+function initializeDatabase() {
+    // Open the database
+    const db = new sqlite3.Database('Ticket-test.db');
+
+    // Check if the user_tickets table exists
+    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='user_tickets'", (err, row) => {
+        if (err) {
+            console.error(err.message);
+            return;
+        }
+
+        // If the table doesn't exist, create it
+        if (!row) {
+            db.run(`
+                CREATE TABLE user_tickets (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id TEXT,
+                    title TEXT,
+                    request TEXT,
+                    selected_items TEXT
+                )
+            `, (err) => {
+                if (err) {
+                    console.error(err.message);
+                } else {
+                    console.log('Database table created: user_tickets Tst2');
+                }
+            });
+        }
+    });
+
+    // Close the database connection
+    db.close();
+}
+
+// Initialize the database when the bot starts
+initializeDatabase();
+
+
+// #################
 export class TeamsBot extends TeamsActivityHandler {
   // record the likeCount
   likeCountObj: { likeCount: number };
@@ -24,12 +69,93 @@ export class TeamsBot extends TeamsActivityHandler {
     super();
 
     this.likeCountObj = { likeCount: 0 };
-
+    
     this.onMessage(async (context, next) => {
       console.log("Running with Message Activity.");
+      if (context.activity.value) {
+        const user_id = context.activity.from.name;
+        const title = context.activity.value.inPutText1;
+        const request = context.activity.value.inPutText;
+        const selected_items = context.activity.value.tags1;
+
+        // Open the database
+        const db = new sqlite3.Database('Ticket-test.db');
+
+        // Insert the ticket into the database
+        db.run(`
+            INSERT INTO user_tickets (user_id, title, request, selected_items)
+            VALUES (?, ?, ?, ?)
+        `, [user_id, title, request, selected_items], (err) => {
+            if (err) {
+                console.error(err.message);
+            } else {
+                console.log('New ticket inserted into the database');
+            }
+        });
+
+        // Close the database connection
+        db.close();
+    } else {
+        // Handle regular messages or other activities without a value property
+        // console.log('Received a message without context.activity.value');
+    }
       if(context.activity.value)
             {
-                await context.sendActivity(`You Typed: ${context.activity.value.inPutText}`);;
+              const adaptiveCard = CardFactory.adaptiveCard({
+                type: 'AdaptiveCard',
+                body: [
+                    {
+                        type: 'TextBlock',
+                        size: "large",
+                        text: `Problem: ${context.activity.value.inPutText1}`,
+                        wrap: true,
+                    },
+                    {
+                      type: 'TextBlock',
+                      Size: "medium",
+                      text: `###################################`,
+                      wrap: true,
+                  },
+                    {
+                      type: 'TextBlock',
+                      Size: "medium",
+                      text: `Beschreibung:`,
+                      wrap: true,
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: `${context.activity.value.inPutText}`,
+                    wrap: true,
+                },
+                {
+                  type: 'TextBlock',
+                  Size: "medium",
+                  text: `###################################`,
+                  wrap: true,
+              },
+                {
+                  type: 'TextBlock',
+                  Size: "medium",
+                  text: `Tags:`,
+                  wrap: true,
+              },
+                {
+                  type: 'TextBlock',
+                  text: `${context.activity.value.tags1}`,
+                  wrap: true,
+              },
+              
+                ],
+            });  
+              //await context.sendActivity(`${context.activity.value.tags1}`);;
+              // Line Obove is to send Plain text back to test if bot can read inputs!!
+              await context.sendActivity({
+                attachments: [adaptiveCard],
+                type: 'message',
+            });
+            // ####
+              
+            // ####
             }
 
       let txt = context.activity.text;
@@ -152,11 +278,11 @@ export class TeamsBot extends TeamsActivityHandler {
       return { statusCode: 200, type: undefined, value: undefined }
   }
     if (invokeValue.action.verb === 'test2') {
-      await context.sendActivity('Oh my?');
+      await context.sendActivity('Dont Just Click Me >:(');
       return { statusCode: 200, type: undefined, value: undefined }
     }
     if (invokeValue.action.type) {
-      await context.sendActivity('Oh my?!=?!???!!??!?!?!?!!?');
+      await context.sendActivity('How? just how?');
       return { statusCode: 200, type: undefined, value: undefined }
     }
 
