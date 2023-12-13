@@ -5,7 +5,7 @@ import { List28Filled, MoreHorizontal32Regular } from "@fluentui/react-icons";
 import { BaseWidget } from "@microsoft/teamsfx-react";
 
 import { ListModel } from "../models/listModel";
-import { getListData } from "../services/listService";
+import { getListDataFromDatabase } from "../services/listService";
 
 interface IListWidgetState {
   data: ListModel[];
@@ -13,9 +13,13 @@ interface IListWidgetState {
 
 export default class ListWidget extends BaseWidget<any, IListWidgetState> {
   async getData(): Promise<IListWidgetState> {
-    return { data: getListData() };
+    // Use await and convert the callback to a Promise
+    return new Promise((resolve) => {
+      getListDataFromDatabase((data) => {
+        resolve({ data });
+      });
+    });
   }
-
   header(): JSX.Element | undefined {
     return (
       <div>
@@ -49,7 +53,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
         onClick={() => this.handleViewDetailsClick()}
         appearance="primary"
       >
-        Create Ticket
+        Get Ticket
       </Button><Button
         onClick={() => this.handleViewDetailsClick()}
         appearance="secondary"
@@ -60,7 +64,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
   }
   
   private handleViewDetailsClick(): void {
-    window.open("", "_blank");
+    // Replace the empty string with the URL you want to open
+    window.open("https://example.com", "_blank");
   }
 }
-  
