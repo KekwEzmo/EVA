@@ -1,24 +1,19 @@
-import "../styles/ListWidget.css";
-
+// listWidget.tsx
+import { getListDataFromDB } from '../services/listService';
+import { ListModel } from '../models/listModel';
 import { Button, Text } from "@fluentui/react-components";
 import { List28Filled, MoreHorizontal32Regular } from "@fluentui/react-icons";
 import { BaseWidget } from "@microsoft/teamsfx-react";
-
-import { ListModel } from "../models/listModel";
-import { getListDataFromDatabase } from "../services/listService";
 
 interface IListWidgetState {
   data: ListModel[];
 }
 
 export default class ListWidget extends BaseWidget<any, IListWidgetState> {
+
   async getData(): Promise<IListWidgetState> {
-    // Use await and convert the callback to a Promise
-    return new Promise((resolve) => {
-      getListDataFromDatabase((data) => {
-        resolve({ data });
-      });
-    });
+    const data = await getListDataFromDB();
+    return { data };
   }
   header(): JSX.Element | undefined {
     return (
@@ -49,6 +44,7 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
 
   footer(): JSX.Element | undefined {
     return (
+<<<<<<< HEAD
       <><Button
         onClick={() => this.handleViewDetailsClick()}
         appearance="primary"
@@ -58,13 +54,25 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
         onClick={() => this.handleViewDetailsClick()}
         appearance="secondary"
       >
+=======
+      <>
+        <Button onClick={() => this.handleViewDetailsClick()} appearance="primary">
+          Create Ticket
+        </Button>
+        <Button onClick={() => this.handleViewDetailsClick()} appearance="secondary">
+>>>>>>> 634c06b (added database access)
           More Details
-        </Button></>
+        </Button>
+      </>
     );
   }
-  
+
   private handleViewDetailsClick(): void {
     // Replace the empty string with the URL you want to open
     window.open("https://example.com", "_blank");
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 634c06b (added database access)
