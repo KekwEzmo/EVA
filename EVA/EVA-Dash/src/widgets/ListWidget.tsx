@@ -44,23 +44,11 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
 
   footer(): JSX.Element | undefined {
     return (
-<<<<<<< HEAD
-      <><Button
-        onClick={() => this.handleViewDetailsClick()}
-        appearance="primary"
-      >
-        Get Ticket
-      </Button><Button
-        onClick={() => this.handleViewDetailsClick()}
-        appearance="secondary"
-      >
-=======
       <>
         <Button onClick={() => this.handleViewDetailsClick()} appearance="primary">
           Create Ticket
         </Button>
         <Button onClick={() => this.handleViewDetailsClick()} appearance="secondary">
->>>>>>> 634c06b (added database access)
           More Details
         </Button>
       </>
@@ -71,8 +59,4 @@ export default class ListWidget extends BaseWidget<any, IListWidgetState> {
     // Replace the empty string with the URL you want to open
     window.open("https://example.com", "_blank");
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 634c06b (added database access)
