@@ -17,10 +17,6 @@ import Privacy from "./Privacy";
 import TabConfig from "./TabConfig";
 import TermsOfUse from "./TermsOfUse";
 
-/**
- * The main app which handles the initialization and routing
- * of the app.
- */
 export default function App() {
   const { loading, themeString, teamsUserCredential } = useTeamsUserCredential({
     initiateLoginEndpoint: process.env.REACT_APP_START_LOGIN_PAGE_URL!,
@@ -50,6 +46,8 @@ export default function App() {
               <Route path="*" element={<Navigate to={"/tab"} />} />
             </Routes>
           )}
+
+          
         </Router>
       </FluentProvider>
     </TeamsFxContext.Provider>

@@ -19,3 +19,4 @@ appPackage/build
 .DS_Store
 .env
 .deployment
+.db
