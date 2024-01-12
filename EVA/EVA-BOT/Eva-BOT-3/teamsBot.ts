@@ -12,13 +12,21 @@ import testcard from "./adaptiveCards/test.json";
 import card2 from "./adaptiveCards/test2.json";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
 import { POST } from "botbuilder/lib/streaming";
-
+// import ticketdb from "./ticketDB"
 export interface DataInterface {
   likeCount: number;
 }
 // #################
 
 import sqlite3 from 'sqlite3';
+
+interface TicketCountRow {
+  count: number;
+}
+
+interface TitleExistsRow {
+  count: number;
+}
 
 // Function to initialize the database
 function initializeDatabase() {
@@ -60,6 +68,8 @@ function initializeDatabase() {
 initializeDatabase();
 
 
+
+
 // #################
 export class TeamsBot extends TeamsActivityHandler {
   // record the likeCount
@@ -78,6 +88,22 @@ export class TeamsBot extends TeamsActivityHandler {
         const request = context.activity.value.inPutText;
         const selected_items = context.activity.value.tags1;
 
+        
+
+        // Check if the user has submitted more than four tickets
+        const ticketCount = await this.getTicketCountForUser(user_id);
+        if (ticketCount >= 4) {
+            await context.sendActivity('You have reached the maximum allowed submissions.');
+            return;
+        }
+
+        // Check if the title already exists for that username
+        const titleExists = await this.checkIfTitleExistsForUser(title, user_id);
+        if (titleExists) {
+            await context.sendActivity('A ticket with the same title already exists.');
+            return;
+        }
+
         // Open the database
         const db = new sqlite3.Database('Ticket-test.db');
 
@@ -88,11 +114,13 @@ export class TeamsBot extends TeamsActivityHandler {
         `, [user_id, title, request, selected_items], (err) => {
             if (err) {
                 console.error(err.message);
+                context.sendActivity('Error submitting ticket.');
             } else {
                 console.log('New ticket inserted into the database');
+                context.sendActivity('Ticket submitted successfully!');
             }
         });
-
+        
         // Close the database connection
         db.close();
     } else {
@@ -113,7 +141,7 @@ export class TeamsBot extends TeamsActivityHandler {
                     {
                       type: 'TextBlock',
                       Size: "medium",
-                      text: `###################################`,
+                      text: `---------------------------`,
                       wrap: true,
                   },
                     {
@@ -130,7 +158,7 @@ export class TeamsBot extends TeamsActivityHandler {
                 {
                   type: 'TextBlock',
                   Size: "medium",
-                  text: `###################################`,
+                  text: `---------------------------`,
                   wrap: true,
               },
                 {
@@ -218,6 +246,8 @@ export class TeamsBot extends TeamsActivityHandler {
       await next();
     });
 
+    
+
     (async (context, next) => {
       const membersAdded = context.activity.membersAdded;
       for (let cnt = 0; cnt < membersAdded.length; cnt++) {
@@ -229,6 +259,7 @@ export class TeamsBot extends TeamsActivityHandler {
       }
       await next();
     });
+    
     
     // 
   
@@ -253,6 +284,54 @@ export class TeamsBot extends TeamsActivityHandler {
     // 
   }
 // 
+
+private async getTicketCountForUser(user_id: string): Promise<number> {
+  return new Promise<number>((resolve, reject) => {
+      const db = new sqlite3.Database('Ticket-test.db');
+
+      const ticketCountQuery = `
+          SELECT COUNT(*) as count
+          FROM user_tickets
+          WHERE user_id = ?
+      `;
+
+      db.get(ticketCountQuery, [user_id], (err, row: TicketCountRow) => {
+          if (err) {
+              console.error(err.message);
+              reject(err);
+          } else {
+              const count = row ? row.count : 0;
+              resolve(count);
+          }
+
+          db.close();
+      });
+  });
+}
+
+private async checkIfTitleExistsForUser(title: string, user_id: string): Promise<boolean> {
+  return new Promise<boolean>((resolve, reject) => {
+      const db = new sqlite3.Database('Ticket-test.db');
+
+      const titleExistsQuery = `
+          SELECT COUNT(*) as count
+          FROM user_tickets
+          WHERE user_id = ? AND title = ?
+      `;
+
+      db.get(titleExistsQuery, [user_id, title], (err, row: TitleExistsRow) => {
+          if (err) {
+              console.error(err.message);
+              reject(err);
+          } else {
+              const titleExists = row ? row.count > 0 : false;
+              resolve(titleExists);
+          }
+
+          db.close();
+      });
+  });
+}
 
 // 
   // Invoked when an action is taken on an Adaptive Card. The Adaptive Card sends an event to the Bot and this
@@ -288,6 +367,7 @@ export class TeamsBot extends TeamsActivityHandler {
 
     }
   }
+
 
 
   
