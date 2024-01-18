@@ -1,94 +1,61 @@
 <script>
-	import mysql from 'mysql2/promise';
-	import { onDestroy } from 'svelte';
+	// @ts-nocheck
+	import { onMount } from 'svelte';
   
-	const dbConfig = {
-	  host: '192.168.122.163',
-	  user: 'tester',
-	  password: 'test',
-	  database: 'testing',
-	};
+	let tableData = [];
   
-	/**
-	 * @type {mysql.Connection}
-	 */
-	let connection;
-  
-	async function connectToDatabase() {
-	  connection = await mysql.createConnection(dbConfig);
-	}
-  
-	let entries = [];
-	let showEditEntryDialog = false;
-	let newEntry = {};
-  
-	async function fetchEntries() {
-	  const [rows] = await connection.execute('SELECT * FROM entries');
-	  entries = rows;
-	}
-  
-	/**
-	 * @param {{ title: any; description: any; }} newEntry
-	 */
-	async function addEntry(newEntry) {
-	  await connection.execute('INSERT INTO entries (title, description) VALUES (?, ?)', [
-		newEntry.title,
-		newEntry.description,
-	  ]);
-	  await fetchEntries();
-	}
-  
-	/**
-	 * @param {any} id
-	 * @param {{ title?: any; description?: any; }} updatedEntry
-	 */
-	async function editEntry(id, updatedEntry) {
-	  await connection.execute('UPDATE entries SET title=?, description=? WHERE id=?', [
-		updatedEntry.title,
-		updatedEntry.description,
-		id,
-	  ]);
-	  await fetchEntries();
-	}
-  
-	/**
-	 * @param {any} id
-	 */
-	async function deleteEntry(id) {
-	  await connection.execute('DELETE FROM entries WHERE id=?', [id]);
-	  await fetchEntries();
-	}
-  
-	/**
-	 * @param {any} id
-	 */
-	async function openEditEntryDialog(id) {
-	  newEntry = await fetchEntryById(id);
-	  showEditEntryDialog = true;
-	}
-  
-	/**
-	 * @param {any} id
-	 */
-	async function fetchEntryById(id) {
-	  const [rows] = await connection.execute('SELECT * FROM entries WHERE id=?', [id]);
-	  return rows[0];
-	}
-  
-	async function handleEditEntrySubmit() {
-	  await editEntry(newEntry.id, newEntry);
-	  closeEditEntryDialog();
-	}
-  
-	function closeEditEntryDialog() {
-	  showEditEntryDialog = false;
-	}
-  
-	// Add this function to close the connection when the component is destroyed
-	onDestroy(() => {
-	  connection.end();
+	onMount(async () => {
+	  try {
+		const response = await fetch('http://localhost:5252/getData');
+		const { data } = await response.json();
+		console.log('Fetched data:', data);
+		tableData = data;
+	  } catch (error) {
+		console.error('Error fetching data:', error);
+	  }
 	});
   </script>
   
-  <!-- Rest of your HTML code remains unchanged -->
+  <section>
+	<table>
+	  <thead>
+		<tr>
+		  <th>ID</th>
+		  <th>User ID</th>
+		  <th>Title</th>
+		  <th>Request</th>
+		  <th>Selected Items</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{#each tableData as row (row.id)}
+		  <tr>
+			<td>{row.id}</td>
+			<td>{row.user_id}</td>
+			<td>{row.title}</td>
+			<td>{row.request}</td>
+			<td>{row.selected_items}</td>
+		  </tr>
+		{/each}
+	  </tbody>
+	</table>
+  </section>
+  
+  <style>
+	table {
+	  width: 100%;
+	  border-collapse: collapse;
+	  margin-top: 20px;
+	}
+  
+	th, td {
+	  border: 1px solid #dddddd;
+	  text-align: left;
+	  padding: 8px;
+	}
+  
+	th {
+	  background-color: #f2f2f2;
+	}
+  </style>
   

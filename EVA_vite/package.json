@@ -14,11 +14,12 @@
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "^1.41.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "8.56.0",
+		"@types/pg": "^8.10.9",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"eslint": "^8.56.0",
@@ -26,15 +27,20 @@
 		"eslint-plugin-svelte": "^2.35.1",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
-		"svelte": "^4.2.7",
+		"svelte": "^4.2.9",
 		"svelte-check": "^3.6.0",
 		"tslib": "^2.4.1",
-		"typescript": "^5.0.0",
+		"typescript": "^5.3.3",
 		"vite": "^5.0.3"
 	},
 	"type": "module",
 	"dependencies": {
+		"express": "^4.18.2",
 		"mysql2": "^3.7.1",
+		"pg": "^8.11.3",
+		"pg-format": "^1.0.4",
+		"pg-promise": "^11.5.4",
+		"postgres": "^3.4.3",
 		"sqlite3": "^5.1.7"
 	}
 }
