@@ -36,45 +36,6 @@ interface TitleExistsRow {
   count: number;
 }
 
-// // Function to initialize the database
-// function initializeDatabase() {
-//     // Open the database
-//     const db = new sqlite3.Database('Ticket-test.db');
-
-//     // Check if the user_tickets table exists
-//     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='user_tickets'", (err, row) => {
-//         if (err) {
-//             console.error(err.message);
-//             return;
-//         }
-
-//         // If the table doesn't exist, create it
-//         if (!row) {
-//             db.run(`
-//                 CREATE TABLE user_tickets (
-//                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-//                     user_id TEXT,
-//                     title TEXT,
-//                     request TEXT,
-//                     selected_items TEXT
-//                 )
-//             `, (err) => {
-//                 if (err) {
-//                     console.error(err.message);
-//                 } else {
-//                     console.log('Database table created: user_tickets Tst2');
-//                 }
-//             });
-//         }
-//     });
-
-//     // Close the database connection
-//     db.close();
-// }
-
-// Initialize the database when the bot starts
-// initializeDatabase();
-
 
 //Testing DB
 
@@ -210,39 +171,6 @@ export class TeamsBot extends TeamsActivityHandler {
           pool.end();
         }
 
-        // // Check if the user has submitted more than four tickets
-        // const ticketCount = await this.getTicketCountForUser(user_id);
-        // if (ticketCount >= 4) {
-        //     await context.sendActivity('You have reached the maximum allowed submissions.');
-        //     return;
-        // }
-
-        // // Check if the title already exists for that username
-        // const titleExists = await this.checkIfTitleExistsForUser(title, user_id);
-        // if (titleExists) {
-        //     await context.sendActivity('A ticket with the same title already exists.');
-        //     return;
-        // }
-
-        // // Open the database
-        // const db = new sqlite3.Database('Ticket-test.db');
-
-        // // Insert the ticket into the database
-        // db.run(`
-        //     INSERT INTO user_tickets (user_id, title, request, selected_items)
-        //     VALUES (?, ?, ?, ?)
-        // `, [user_id, title, request, selected_items], (err) => {
-        //     if (err) {
-        //         console.error(err.message);
-        //         context.sendActivity('Error submitting ticket.');
-        //     } else {
-        //         console.log('New ticket inserted into the database');
-        //         context.sendActivity('Ticket submitted successfully!');
-        //     }
-        // });
-        
-        // // Close the database connection
-        // db.close();
     } else {
         // Handle regular messages or other activities without a value property
         // console.log('Received a message without context.activity.value');
@@ -381,78 +309,8 @@ export class TeamsBot extends TeamsActivityHandler {
     });
     
     
-    // 
   
-  
-  // this.onInvokeActivity.call(async (context, next) => {
-  //     const invokeValue = context.activity.value;
-
-  //     if (invokeValue && invokeValue.type === 'adaptiveCard/action' && invokeValue.action && invokeValue.action.type === 'Action.Submit') {
-  //         // Handle the .submit action here
-  //         const comment = invokeValue.action.data.comment;
-
-  //         // Process the comment (add your logic here)
-  //         await context.sendActivity(`Thanks for your feedback: ${comment}`);
-
-  //         // Optionally, return a response
-  //         return { statusCode: 200, type: 'message', value: { text: 'Received your feedback!' } };
-  //     }
-
-  //     // Continue to the next middleware
-  //     await next();
-  // });
-    // 
   }
-// 
-
-// private async getTicketCountForUser(user_id: string): Promise<number> {
-//   return new Promise<number>((resolve, reject) => {
-//       const db = new sqlite3.Database('Ticket-test.db');
-
-//       const ticketCountQuery = `
-//           SELECT COUNT(*) as count
-//           FROM user_tickets
-//           WHERE user_id = ?
-//       `;
-
-//       db.get(ticketCountQuery, [user_id], (err, row: TicketCountRow) => {
-//           if (err) {
-//               console.error(err.message);
-//               reject(err);
-//           } else {
-//               const count = row ? row.count : 0;
-//               resolve(count);
-//           }
-
-//           db.close();
-//       });
-//   });
-// }
-
-// private async checkIfTitleExistsForUser(title: string, user_id: string): Promise<boolean> {
-//   return new Promise<boolean>((resolve, reject) => {
-//       const db = new sqlite3.Database('Ticket-test.db');
-
-//       const titleExistsQuery = `
-//           SELECT COUNT(*) as count
-//           FROM user_tickets
-//           WHERE user_id = ? AND title = ?
-//       `;
-
-//       db.get(titleExistsQuery, [user_id, title], (err, row: TitleExistsRow) => {
-//           if (err) {
-//               console.error(err.message);
-//               reject(err);
-//           } else {
-//               const titleExists = row ? row.count > 0 : false;
-//               resolve(titleExists);
-//           }
-
-//           db.close();
-//       });
-//   });
-// }
-
 
 // Postgresql functions
 
@@ -542,24 +400,3 @@ private async checkIfTitleExistsForUser(title: string, user_id: string): Promise
     }
   }
 
-
-
-  
-
-    //   // Check if the submitted action is from the "comment" input field
-    //   // if () {
-    //   //     const comment = context.sendActivity('Name: ${context.activity.value.comment}');
-  
-    //   //     // Respond with the user's comment
-    //   //     await context.sendActivity(`You entered: ${context.activity.value.comment}, that's pretty cool!`);
-  
-    //   //     // Optionally, you can return a response
-    //   //     return { statusCode: 200, type: undefined, value: undefined };
-    //   // }
-    //   this.onMessage(async (context, next) => {
-    //     if(context.activity.value)
-    //     {
-    //         await context.sendActivity(`Name: ${context.activity.value.comment}`);;
-    //     }
-    //     await next();
-    // });
