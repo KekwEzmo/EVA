@@ -1,64 +1,78 @@
 <script>
-	import { db } from '$lib/server/database.db';
+	import mysql from 'mysql2/promise';
+	import { onDestroy } from 'svelte';
+  
+	const dbConfig = {
+	  host: '192.168.122.163',
+	  user: 'tester',
+	  password: 'test',
+	  database: 'testing',
+	};
+  
+	/**
+	 * @type {mysql.Connection}
+	 */
+	let connection;
+  
+	async function connectToDatabase() {
+	  connection = await mysql.createConnection(dbConfig);
+	}
   
 	let entries = [];
-  
-	async function fetchEntries() {
-	  entries = await db.getAllEntries();
-	}
-  
-	async function addEntry(newEntry) {
-	  await db.addEntry(newEntry);
-	  fetchEntries();
-	}
-  
-	async function editEntry(id, updatedEntry) {
-	  await db.updateEntry(id, updatedEntry);
-	  fetchEntries();
-	}
-  
-	async function deleteEntry(id) {
-	  await db.deleteEntry(id);
-	  fetchEntries();
-	}
-  </script>
-  
-  <h2>Database Widget</h2>
-  
-  <button on:click={fetchEntries}>Fetch Entries</button>
-  
-  <table>
-	<thead>
-	  <tr>
-		<th>ID</th>
-		<th>Title</th>
-		<th>Description</th>
-		<th>Actions</th>
-	  </tr>
-	</thead>
-
-  </table>
-  
-  <dialog open={showEditEntryDialog}>
-	<form on:submit|preventDefault={handleEditEntrySubmit}>
-	  <label for="title">Title:</label>
-	  <input id="title" type="text" bind:value={newEntry.title} />
-  
-	  <label for="description">Description:</label>
-	  <textarea id="description" bind:value={newEntry.description} />
-  
-	  <button type="submit">Save</button>
-	  <button on:click={() => closeEditEntryDialog()}>Cancel</button>
-	</form>
-  </dialog>
-  
-  <script>
 	let showEditEntryDialog = false;
 	let newEntry = {};
   
-	function openEditEntryDialog(id) {
-	  newEntry = await db.getEntryById(id);
+	async function fetchEntries() {
+	  const [rows] = await connection.execute('SELECT * FROM entries');
+	  entries = rows;
+	}
+  
+	/**
+	 * @param {{ title: any; description: any; }} newEntry
+	 */
+	async function addEntry(newEntry) {
+	  await connection.execute('INSERT INTO entries (title, description) VALUES (?, ?)', [
+		newEntry.title,
+		newEntry.description,
+	  ]);
+	  await fetchEntries();
+	}
+  
+	/**
+	 * @param {any} id
+	 * @param {{ title?: any; description?: any; }} updatedEntry
+	 */
+	async function editEntry(id, updatedEntry) {
+	  await connection.execute('UPDATE entries SET title=?, description=? WHERE id=?', [
+		updatedEntry.title,
+		updatedEntry.description,
+		id,
+	  ]);
+	  await fetchEntries();
+	}
+  
+	/**
+	 * @param {any} id
+	 */
+	async function deleteEntry(id) {
+	  await connection.execute('DELETE FROM entries WHERE id=?', [id]);
+	  await fetchEntries();
+	}
+  
+	/**
+	 * @param {any} id
+	 */
+	async function openEditEntryDialog(id) {
+	  newEntry = await fetchEntryById(id);
 	  showEditEntryDialog = true;
+	}
+  
+	/**
+	 * @param {any} id
+	 */
+	async function fetchEntryById(id) {
+	  const [rows] = await connection.execute('SELECT * FROM entries WHERE id=?', [id]);
+	  return rows[0];
 	}
   
 	async function handleEditEntrySubmit() {
@@ -69,3 +83,12 @@
 	function closeEditEntryDialog() {
 	  showEditEntryDialog = false;
 	}
+  
+	// Add this function to close the connection when the component is destroyed
+	onDestroy(() => {
+	  connection.end();
+	});
+  </script>
+  
+  <!-- Rest of your HTML code remains unchanged -->
+  

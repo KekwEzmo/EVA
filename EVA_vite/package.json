@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"mysql2": "^3.7.1",
 		"sqlite3": "^5.1.7"
 	}
 }
