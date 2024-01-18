@@ -21,7 +21,7 @@
 	</h1>
 
 	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
+		for checking your tickets go to <strong>TICKETING</strong>
 	</h2>
 
 </section>

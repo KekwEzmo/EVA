@@ -1,22 +1,25 @@
 <script>
-	// @ts-nocheck
-	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
   
-	let tableData = [];
+	let tableData = writable([]);
   
-	onMount(async () => {
+	async function fetchData() {
 	  try {
-		const response = await fetch('http://localhost:5252/getData');
+		const response = await fetch('http://192.168.0.215:5252/getData', {
+  credentials: 'include', // 
+});
 		const { data } = await response.json();
 		console.log('Fetched data:', data);
-		tableData = data;
+		tableData.set(data);
 	  } catch (error) {
 		console.error('Error fetching data:', error);
 	  }
-	});
+	}
   </script>
   
   <section>
+	<button on:click="{fetchData}">Fetch Data</button>
+  
 	<table>
 	  <thead>
 		<tr>
@@ -28,7 +31,7 @@
 		</tr>
 	  </thead>
 	  <tbody>
-		{#each tableData as row (row.id)}
+		{#each $tableData as row (row.id)}
 		  <tr>
 			<td>{row.id}</td>
 			<td>{row.user_id}</td>
