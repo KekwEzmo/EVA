@@ -11,7 +11,15 @@ import rawLearnCard from "./adaptiveCards/learn.json";
 import testcard from "./adaptiveCards/test.json";
 import card2 from "./adaptiveCards/test2.json";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
-import { POST } from "botbuilder/lib/streaming";
+//import { POST } from "botbuilder/lib/streaming";
+
+import { Client } from 'pg';
+import { Pool } from 'pg';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+
+
 // import ticketdb from "./ticketDB"
 export interface DataInterface {
   likeCount: number;
@@ -28,50 +36,118 @@ interface TitleExistsRow {
   count: number;
 }
 
-// Function to initialize the database
-function initializeDatabase() {
-    // Open the database
-    const db = new sqlite3.Database('Ticket-test.db');
+// // Function to initialize the database
+// function initializeDatabase() {
+//     // Open the database
+//     const db = new sqlite3.Database('Ticket-test.db');
 
-    // Check if the user_tickets table exists
-    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='user_tickets'", (err, row) => {
-        if (err) {
-            console.error(err.message);
-            return;
-        }
+//     // Check if the user_tickets table exists
+//     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='user_tickets'", (err, row) => {
+//         if (err) {
+//             console.error(err.message);
+//             return;
+//         }
 
-        // If the table doesn't exist, create it
-        if (!row) {
-            db.run(`
-                CREATE TABLE user_tickets (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id TEXT,
-                    title TEXT,
-                    request TEXT,
-                    selected_items TEXT
-                )
-            `, (err) => {
-                if (err) {
-                    console.error(err.message);
-                } else {
-                    console.log('Database table created: user_tickets Tst2');
-                }
-            });
-        }
-    });
+//         // If the table doesn't exist, create it
+//         if (!row) {
+//             db.run(`
+//                 CREATE TABLE user_tickets (
+//                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                     user_id TEXT,
+//                     title TEXT,
+//                     request TEXT,
+//                     selected_items TEXT
+//                 )
+//             `, (err) => {
+//                 if (err) {
+//                     console.error(err.message);
+//                 } else {
+//                     console.log('Database table created: user_tickets Tst2');
+//                 }
+//             });
+//         }
+//     });
 
-    // Close the database connection
-    db.close();
-}
+//     // Close the database connection
+//     db.close();
+// }
 
 // Initialize the database when the bot starts
-initializeDatabase();
+// initializeDatabase();
 
 
+//Testing DB
 
+function initializeDatabase1(): void {
+
+  
+  const envPath = path.resolve(__dirname, 'env', '.env.local');
+  const result = dotenv.config({ path: envPath });
+  
+  if (result.error) {
+    console.error(result.error);
+  } else {
+    console.log('Environment variables loaded successfully');
+  }
+
+// ... rest of your code
+  // Update the database connection configuration for the external PostgreSQL database
+  const dbConfig = {
+      user: process.env.DB_U ,
+      host: process.env.DB_H ,
+      database: process.env.DB_N,
+      password: process.env.DB_P,
+      port: 5432, // Replace with your PostgreSQL port if different
+  };
+  console.log(`DB Host: ${process.env.DB_n}`);
+
+
+  const db = new Client(dbConfig);
+
+  // Connect to the PostgreSQL server
+  db.connect()
+      .then(() => {
+          console.log('Connected to PostgreSQL database');
+      })
+      .catch((err) => {
+          console.error('Error connecting to PostgreSQL:', err.message);
+      })
+      .finally(() => {
+          // Close the PostgreSQL connection
+          db.end();
+      });
+
+  // Check if the user_tickets table exists
+  const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS tickets (
+          id SERIAL PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          request TEXT NOT NULL,
+          selected_items TEXT NOT NULL
+      )
+  `;
+
+  db.query(createTableQuery)
+            .then(() => {
+                console.log('Table user_tickets is ready');
+            })
+            .catch((err) => {
+                console.error('Error creating user_tickets table:', err.message);
+            })
+            .finally(() => {
+                // Close the PostgreSQL connection
+                db.end();
+            });
+    }
+
+    
+
+//
 
 // #################
 export class TeamsBot extends TeamsActivityHandler {
+
   // record the likeCount
   likeCountObj: { likeCount: number };
 
@@ -79,7 +155,7 @@ export class TeamsBot extends TeamsActivityHandler {
     super();
 
     this.likeCountObj = { likeCount: 0 };
-    
+    initializeDatabase1()
     this.onMessage(async (context, next) => {
       console.log("Running with Message Activity.");
       if (context.activity.value) {
@@ -88,41 +164,85 @@ export class TeamsBot extends TeamsActivityHandler {
         const request = context.activity.value.inPutText;
         const selected_items = context.activity.value.tags1;
 
+        const pool = new Pool({
+          user: process.env.DB_U ,
+          host: process.env.DB_H ,
+          database: process.env.DB_N,
+          password: process.env.DB_P,
+          port: 5432,
+        });
         
-
         // Check if the user has submitted more than four tickets
         const ticketCount = await this.getTicketCountForUser(user_id);
         if (ticketCount >= 4) {
-            await context.sendActivity('You have reached the maximum allowed submissions.');
-            return;
+          await context.sendActivity('You have reached the maximum allowed submissions.');
+          return;
         }
-
+        
         // Check if the title already exists for that username
         const titleExists = await this.checkIfTitleExistsForUser(title, user_id);
         if (titleExists) {
-            await context.sendActivity('A ticket with the same title already exists.');
-            return;
+          await context.sendActivity('A ticket with the same title already exists.');
+          return;
+        }
+        
+        try {
+          // Insert the ticket into the database
+          const query = `
+            INSERT INTO tickets (user_id, title, request, selected_items)
+            VALUES ($1, $2, $3, $4)
+          `;
+        
+          const values = [user_id, title, request, selected_items];
+        
+          await pool.query(query, values);
+        
+          console.log('New ticket inserted into the database');
+          await context.sendActivity('Ticket submitted successfully!');
+        } catch (error) {
+          console.error(error.message);
+          await context.sendActivity('Error submitting ticket.');
+        } finally {
+          // Release the client back to the pool
+          // Note: This is important to prevent resource leaks
+          // If you're using a transaction, use `client.query('COMMIT');` before releasing the client
+          // If there's an error, use `client.query('ROLLBACK');` before releasing the client
+          pool.end();
         }
 
-        // Open the database
-        const db = new sqlite3.Database('Ticket-test.db');
+        // // Check if the user has submitted more than four tickets
+        // const ticketCount = await this.getTicketCountForUser(user_id);
+        // if (ticketCount >= 4) {
+        //     await context.sendActivity('You have reached the maximum allowed submissions.');
+        //     return;
+        // }
 
-        // Insert the ticket into the database
-        db.run(`
-            INSERT INTO user_tickets (user_id, title, request, selected_items)
-            VALUES (?, ?, ?, ?)
-        `, [user_id, title, request, selected_items], (err) => {
-            if (err) {
-                console.error(err.message);
-                context.sendActivity('Error submitting ticket.');
-            } else {
-                console.log('New ticket inserted into the database');
-                context.sendActivity('Ticket submitted successfully!');
-            }
-        });
+        // // Check if the title already exists for that username
+        // const titleExists = await this.checkIfTitleExistsForUser(title, user_id);
+        // if (titleExists) {
+        //     await context.sendActivity('A ticket with the same title already exists.');
+        //     return;
+        // }
+
+        // // Open the database
+        // const db = new sqlite3.Database('Ticket-test.db');
+
+        // // Insert the ticket into the database
+        // db.run(`
+        //     INSERT INTO user_tickets (user_id, title, request, selected_items)
+        //     VALUES (?, ?, ?, ?)
+        // `, [user_id, title, request, selected_items], (err) => {
+        //     if (err) {
+        //         console.error(err.message);
+        //         context.sendActivity('Error submitting ticket.');
+        //     } else {
+        //         console.log('New ticket inserted into the database');
+        //         context.sendActivity('Ticket submitted successfully!');
+        //     }
+        // });
         
-        // Close the database connection
-        db.close();
+        // // Close the database connection
+        // db.close();
     } else {
         // Handle regular messages or other activities without a value property
         // console.log('Received a message without context.activity.value');
@@ -285,53 +405,107 @@ export class TeamsBot extends TeamsActivityHandler {
   }
 // 
 
+// private async getTicketCountForUser(user_id: string): Promise<number> {
+//   return new Promise<number>((resolve, reject) => {
+//       const db = new sqlite3.Database('Ticket-test.db');
+
+//       const ticketCountQuery = `
+//           SELECT COUNT(*) as count
+//           FROM user_tickets
+//           WHERE user_id = ?
+//       `;
+
+//       db.get(ticketCountQuery, [user_id], (err, row: TicketCountRow) => {
+//           if (err) {
+//               console.error(err.message);
+//               reject(err);
+//           } else {
+//               const count = row ? row.count : 0;
+//               resolve(count);
+//           }
+
+//           db.close();
+//       });
+//   });
+// }
+
+// private async checkIfTitleExistsForUser(title: string, user_id: string): Promise<boolean> {
+//   return new Promise<boolean>((resolve, reject) => {
+//       const db = new sqlite3.Database('Ticket-test.db');
+
+//       const titleExistsQuery = `
+//           SELECT COUNT(*) as count
+//           FROM user_tickets
+//           WHERE user_id = ? AND title = ?
+//       `;
+
+//       db.get(titleExistsQuery, [user_id, title], (err, row: TitleExistsRow) => {
+//           if (err) {
+//               console.error(err.message);
+//               reject(err);
+//           } else {
+//               const titleExists = row ? row.count > 0 : false;
+//               resolve(titleExists);
+//           }
+
+//           db.close();
+//       });
+//   });
+// }
+
+
+// Postgresql functions
+
+
 private async getTicketCountForUser(user_id: string): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
-      const db = new sqlite3.Database('Ticket-test.db');
-
-      const ticketCountQuery = `
-          SELECT COUNT(*) as count
-          FROM user_tickets
-          WHERE user_id = ?
-      `;
-
-      db.get(ticketCountQuery, [user_id], (err, row: TicketCountRow) => {
-          if (err) {
-              console.error(err.message);
-              reject(err);
-          } else {
-              const count = row ? row.count : 0;
-              resolve(count);
-          }
-
-          db.close();
-      });
+  const pool = new Pool({
+    user: process.env.DB_U ,
+    host: process.env.DB_H ,
+    database: process.env.DB_N,
+    password: process.env.DB_P,
+    port: 5432,
   });
+  try {
+    const ticketCountQuery = `
+      SELECT COUNT(*) as count
+      FROM tickets
+      WHERE user_id = $1
+    `;
+
+    const result = await pool.query(ticketCountQuery, [user_id]);
+    const count = result.rows[0] ? parseInt(result.rows[0].count) : 0;
+    return count;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
 }
 
 private async checkIfTitleExistsForUser(title: string, user_id: string): Promise<boolean> {
-  return new Promise<boolean>((resolve, reject) => {
-      const db = new sqlite3.Database('Ticket-test.db');
-
-      const titleExistsQuery = `
-          SELECT COUNT(*) as count
-          FROM user_tickets
-          WHERE user_id = ? AND title = ?
-      `;
-
-      db.get(titleExistsQuery, [user_id, title], (err, row: TitleExistsRow) => {
-          if (err) {
-              console.error(err.message);
-              reject(err);
-          } else {
-              const titleExists = row ? row.count > 0 : false;
-              resolve(titleExists);
-          }
-
-          db.close();
-      });
+  const pool = new Pool({
+    user: process.env.DB_U ,
+    host: process.env.DB_H ,
+    database: process.env.DB_N,
+    password: process.env.DB_P,
+    port: 5432,
   });
+  try {
+    const titleExistsQuery = `
+      SELECT COUNT(*) as count
+      FROM tickets
+      WHERE user_id = $1 AND title = $2
+    `;
+
+    const result = await pool.query(titleExistsQuery, [user_id, title]);
+    const titleExists = result.rows[0] ? parseInt(result.rows[0].count) > 0 : false;
+    return titleExists;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
 }
+//
+
 
 // 
   // Invoked when an action is taken on an Adaptive Card. The Adaptive Card sends an event to the Bot and this
