@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "better-sqlite3": "^9.2.2",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.6",
-    "svelte": "^4.2.8"
-  }
-}
