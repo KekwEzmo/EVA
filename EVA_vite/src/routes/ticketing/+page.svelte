@@ -5,7 +5,7 @@
 
 	async function fetchData() {
 		try {
-			const response = await fetch('http://192.168.0.215:5252/getData', {
+			const response = await fetch('http://almsivi.ddns.net:5252/getData', {
 				credentials: 'include',
 			});
 			const { data } = await response.json();
