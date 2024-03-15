@@ -11,7 +11,7 @@
       },
       {
         "type": "TextBlock",
-        "text": "In this field you can Test te Bot for a Response and Send Custom Data to it",
+        "text": "In this field you can Test the Bot for a Response and Send Custom Data to it",
         "wrap": true
       },
       {

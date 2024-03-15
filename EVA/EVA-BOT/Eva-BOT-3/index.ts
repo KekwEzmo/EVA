@@ -66,5 +66,18 @@ server.listen(process.env.port || process.env.PORT || 3978, () => {
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
     await bot.run(context);
+    const message = context.activity.text;
+      // Process the incoming request
+       const incomingMessage = req.body;
+
+      // Handle the message and generate a response
+      const responseMessage = `Received message: ${incomingMessage.text}`;
+
+  // Send a response back to the sender
+  res.send(responseMessage);
+    if (message === "hello") {
+      // Send a reply to the user
+      await context.sendActivity("Hello, user123!");
+    }
   });
 });

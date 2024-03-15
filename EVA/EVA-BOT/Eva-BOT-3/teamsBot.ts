@@ -12,6 +12,7 @@ import testcard from "./adaptiveCards/test.json";
 import helpcard from "./adaptiveCards/faq.json"
 import card2 from "./adaptiveCards/test2.json";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
+import { spawn } from 'child_process';
 //import { POST } from "botbuilder/lib/streaming";
 
 import { Client } from 'pg';
@@ -141,6 +142,24 @@ function initializeDatabase() {
           console.log('Database connection closed');
       }
   });
+
+//Start of opening API service
+
+const uvicornProcess = spawn('uvicorn', ['teamsbot-db-API:app', '--host', '0.0.0.0', '--port', '8000', '--reload']);
+
+uvicornProcess.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
+
+uvicornProcess.stderr.on('data', (data) => {
+  console.error(`stderr: ${data}`);
+});
+
+uvicornProcess.on('close', (code) => {
+  console.log(`uvicorn process exited with code ${code}`);
+});
+
+
 }
 
 // Call the function to initialize the database

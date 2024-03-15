@@ -1,0 +1,36 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Need help?",
+        "size": "large",
+        "weight": "bolder"
+      },
+      {
+        "type": "TextBlock",
+        "text": "You can Either look trough the FAQ Page to see if your problem already has a solution or send a ticket if you need furthur assistance",
+        "wrap": true
+      },
+      {
+        "type": "Image",
+        "url": "https://i.imgur.com/cw91eRG.jpeg",
+        "size": "large"
+      }
+    ],
+    "actions": [
+        {
+            "type": "Action.OpenUrl",
+            "title": "Visit FAQ Page",
+            "url": "https://de.wikipedia.org/wiki/Rickrolling"
+            },
+      {
+        "type": "Action.Execute",
+        "title": "Send a Ticket",
+        "verb": "ticket"
+      }
+    ]
+  }
+  
