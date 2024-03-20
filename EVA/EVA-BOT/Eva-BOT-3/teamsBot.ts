@@ -15,6 +15,8 @@ import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
 import { spawn } from 'child_process';
 //import { POST } from "botbuilder/lib/streaming";
 
+
+
 import { Client } from 'pg';
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
@@ -121,7 +123,11 @@ function initializeDatabase() {
           user_id TEXT NOT NULL,
           title TEXT NOT NULL,
           request TEXT NOT NULL,
-          selected_items TEXT NOT NULL
+          selected_items TEXT NOT NULL,
+          creation_date TEXT NOT NULL,
+          edit_date TEXT NOT NULL,
+          status TEXT NOT NULL,
+          solver_id TEXT NOT NULL
       )
   `;
 
@@ -263,18 +269,18 @@ export class TeamsBot extends TeamsActivityHandler {
     
             // Insert the ticket into the database
             const insertQuery = `
-                INSERT INTO tickets (user_id, title, request, selected_items)
-                VALUES (?, ?, ?, ?)
-            `;
-    
+                  INSERT INTO tickets (user_id, title, request, selected_items, creation_date, edit_date, status, solver_id)
+                  VALUES (?, ?, ?, ?, DATETIME('now'), DATETIME('now'), 'open', '')
+                `;
+
             db.run(insertQuery, [user_id, title, request, selected_items], function(err) {
-                if (err) {
-                    console.error('Error inserting ticket into database:', err.message);
-                    context.sendActivity('Error submitting ticket.');
-                } else {
-                    console.log('New ticket inserted into the database');
-                    context.sendActivity('Ticket submitted successfully!');
-                }
+              if (err) {
+                console.error('Error inserting ticket into database:', err.message);
+                context.sendActivity('Error submitting ticket.');
+              } else {
+                console.log('New ticket inserted into the database');
+                context.sendActivity('Ticket submitted successfully!');
+              }
             });
 
             async function getTicketCountForUser(db, user_id) {
