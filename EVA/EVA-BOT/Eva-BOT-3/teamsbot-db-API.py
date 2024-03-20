@@ -27,9 +27,9 @@ class Ticket(BaseModel):
     request: str
     selected_items: str
     creation_date: str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    edit_date: str = None
+    edit_date: str
     status: str = "open"
-    solver_id: str = None
+    solver_id: str
 
 # Define your CRUD operations
 @app.post("/tickets/")
@@ -59,15 +59,39 @@ async def read_ticket(ticket_id: int):
     ticket = {"id": result[0][0], "user_id": result[0][1], "title": result[0][2], "request": result[0][3], "selected_items": result[0][4], "creation_date": result[0][5], "edit_date": result[0][6], "status": result[0][7], "solver_id": result[0][8]}
     return ticket
 
+
+from datetime import datetime
+
 @app.put("/tickets/{ticket_id}")
 async def update_ticket(ticket_id: int, ticket: Ticket):
-    # Get the current timestamp
-    current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Get the existing ticket data from the database
+    existing_ticket_query = "SELECT * FROM tickets WHERE id = ?"
+    existing_ticket = execute_query(existing_ticket_query, (ticket_id,))
+    
+    # If the ticket with the given ID doesn't exist, raise an HTTPException
+    if not existing_ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    
+    # Extract the existing ticket data
+    existing_ticket_data = existing_ticket[0]
 
-    # Update the ticket in the database with the provided data and current timestamp
+    # Extract existing values or use provided values
+    user_id = ticket.user_id if ticket.user_id else existing_ticket_data[1]
+    title = ticket.title if ticket.title else existing_ticket_data[2]
+    request = ticket.request if ticket.request else existing_ticket_data[3]
+    selected_items = ticket.selected_items if ticket.selected_items else existing_ticket_data[4]
+    edit_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+    status = ticket.status if ticket.status else existing_ticket_data[7]
+    solver_id = ticket.solver_id if ticket.solver_id else existing_ticket_data[8]
+    
+    # Update the ticket in the database with the provided or existing data
     query = "UPDATE tickets SET user_id = ?, title = ?, request = ?, selected_items = ?, edit_date = ?, status = ?, solver_id = ? WHERE id = ?"
-    execute_query(query, (ticket.user_id, ticket.title, ticket.request, ticket.selected_items, current_timestamp, ticket.status, ticket.solver_id, ticket_id))
+    execute_query(query, (user_id, title, request, selected_items, edit_date, status, solver_id, ticket_id))
+    
     return {"message": "Ticket updated successfully"}
+
+
+
 
 @app.delete("/tickets/{ticket_id}")
 async def delete_ticket(ticket_id: int):
