@@ -1,0 +1,99 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Ticket-Creator.",
+        "size": "large",
+        "weight": "bolder"
+      },
+      {
+        "type": "TextBlock",
+        "text": "In this field you can Test the Bot for a Response and Send Custom Data to it",
+        "wrap": true
+      },
+      {
+        "type": "Image",
+        "url": "https://i.imgur.com/DiLdOxO.jpeg",
+        "size": "large"
+      }
+    ],
+    "actions": [
+      {
+        "type": "Action.Execute",
+        "title": "Push me!",
+        "verb": "test2",
+        "data": {
+            "action": "test2"
+          }
+      },
+      {
+        "type": "Action.Execute",
+        "title": "Push me 2",
+        "verb": "test",
+        "data": {
+            "action": "test"
+          }
+      },
+      {
+        "type": "Action.ShowCard",
+        "title": "Feedback",
+        "card": {
+          "type": "AdaptiveCard",
+          "body": [
+            {
+              "type": "TextBlock",
+              "text": "Title"
+            },
+            {
+              "type": "Input.Text",
+              "id": "inPutText1",
+              "placeholder": "Describe in short words whats going on"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Data"
+            },
+            {
+              "type": "Input.Text",
+              "id": "inPutText",
+              "isMultiline": true,
+              "placeholder": "Describe the Problem in detail"
+            },
+            {
+              "type": "Input.ChoiceSet",
+              "id": "tags1",
+              "isMultiSelect": true,
+              "value": "",
+              "choices": [
+                  {
+                      "title": "Raum",
+                      "value": "Raum"
+                  },
+                  {
+                    "title": "Dokumente",
+                    "value": "Dokumente"
+                },
+                {
+                  "title": "IT-Fehler",
+                  "value": "IT-Fehler"
+              }
+              ],
+              "style": "expanded"
+          }
+          ],
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Submit",
+              "id": "Subtest",
+              "associatedInputs": "auto"
+            }
+          ]
+        }
+      }
+    ]
+  }
+  

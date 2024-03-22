@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    networks:
+      - mynetwork1
+
+  backend:
+    build:
+      context: ./backend/Eva-BOT-3
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork1
+
+networks:
+  mynetwork1:
+    driver: bridge
