@@ -8,7 +8,7 @@ import {
 } from "botbuilder";
 import rawWelcomeCard from "./adaptiveCards/welcome.json";
 import rawLearnCard from "./adaptiveCards/learn.json";
-import testcard from "./adaptiveCards/test.json";
+import evacard from "./adaptiveCards/ticket.json";
 import helpcard from "./adaptiveCards/faq.json"
 import card2 from "./adaptiveCards/test2.json";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
@@ -406,7 +406,7 @@ export class TeamsBot extends TeamsActivityHandler {
           break;
         }
         case "test":{
-          const card = AdaptiveCards.declare<DataInterface>(testcard).render();
+          const card = AdaptiveCards.declare<DataInterface>(evacard).render();
           await context.sendActivity({ attachments: [CardFactory.adaptiveCard(card)] });
           break;
         }
@@ -424,7 +424,7 @@ export class TeamsBot extends TeamsActivityHandler {
           // Send all cards
           const welcomeCard = AdaptiveCards.declareWithoutData(rawWelcomeCard).render();
           const learnCard = AdaptiveCards.declare<DataInterface>(rawLearnCard).render(this.likeCountObj);
-          const testCard = AdaptiveCards.declare<DataInterface>(testcard).render();
+          const testCard = AdaptiveCards.declare<DataInterface>(evacard).render();
       
           await context.sendActivity({
             attachments: [
@@ -552,7 +552,7 @@ export class TeamsBot extends TeamsActivityHandler {
       return { statusCode: 200, type: undefined, value: undefined }
     }
     if (invokeValue.action.verb === 'ticket') {
-      const card = AdaptiveCards.declare<DataInterface>(testcard).render();
+      const card = AdaptiveCards.declare<DataInterface>(evacard).render();
       await context.sendActivity({ attachments: [CardFactory.adaptiveCard(card)] });
     }
     if (invokeValue.action.type) {
