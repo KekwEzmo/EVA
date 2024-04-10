@@ -22,22 +22,6 @@
     ],
     "actions": [
       {
-        "type": "Action.Execute",
-        "title": "Push me!",
-        "verb": "test2",
-        "data": {
-            "action": "test2"
-          }
-      },
-      {
-        "type": "Action.Execute",
-        "title": "Push me 2",
-        "verb": "test",
-        "data": {
-            "action": "test"
-          }
-      },
-      {
         "type": "Action.ShowCard",
         "title": "Feedback",
         "card": {
