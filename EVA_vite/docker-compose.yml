@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  eva-vite:
+    build: . 
+    volumes:
+      - .:/app 
+    command: bash -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173" 
+

@@ -10,7 +10,7 @@ test('Database connection and CORS test', async ({ page }) => {
 	// Set the API endpoint URL
 	const apiEndpoint = 'http://192.168.122.163:3000/api/data';
   
-	// Navigate to your Svelte app
+	// Navigate to your Svelte appy
 	await page.goto('http://localhost:5173/');
   
 	// Click the "Fetch Data" button

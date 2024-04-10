@@ -41,6 +41,7 @@
 		"pg-format": "^1.0.4",
 		"pg-promise": "^11.5.4",
 		"postgres": "^3.4.3",
-		"sqlite3": "^5.1.7"
+		"sqlite3": "^5.1.7",
+		"svelte-adapter-azure-swa": "^0.20.0"
 	}
 }

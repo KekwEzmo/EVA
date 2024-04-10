@@ -5,7 +5,7 @@
 
 	async function fetchData() {
 		try {
-			const response = await fetch('http://192.168.122.163:5252/getData', {
+			const response = await fetch('http://192.168.122.163:3000/api/data', {
 				credentials: 'include',
 			});
 			const { data } = await response.json();
